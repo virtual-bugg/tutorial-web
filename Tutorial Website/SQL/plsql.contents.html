@@ -1,0 +1,172 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/CSS/sql.css">
+    <style>
+        body{
+            margin: 5%;
+            font-size: large;
+        }
+        h4, h5{
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <h1>Overview</h1>
+    With PL/SQL, you can use SQL statements to manipulate Oracle data and flow-of control statements to process the data. Moreover, you can declare constants and
+variables, define procedures and functions, and trap runtime errors. Thus, PL/SQL
+combines the data manipulating power of SQL with the data processing power of
+procedural languages. <br>
+A good way to get acquainted with PL/SQL is to look at a sample program. The
+program below processes an order for tennis rackets. First, it declares a variable of
+type NUMBER to store the quantity of tennis rackets on hand. Then, it retrieves the
+quantity on hand from a database table named inventory. If the quantity is
+greater than zero, the program updates the table and inserts a purchase record into
+another table named purchase_record. Otherwise, the program inserts an out of-stock record into the purchase_record table.
+-- available online in file ’examp1’
+<br><br>
+<h5>
+    <h4>DECLARE</h4><br>
+ qty_on_hand NUMBER(5); <br>
+<h4>BEGIN</h4> <br>
+ SELECT quantity INTO qty_on_hand FROM inventory <br>
+ WHERE product = ’TENNIS RACKET’<br>
+ FOR UPDATE OF quantity; <br>
+ IF qty_on_hand > 0 THEN -- check quantity <br>
+ UPDATE inventory SET quantity = quantity - 1 <br>
+ WHERE product = ’TENNIS RACKET’; <br>
+ INSERT INTO purchase_record <br>
+ VALUES (’Tennis racket purchased’, SYSDATE); <br>
+ ELSE <br>
+ INSERT INTO purchase_record <br>
+ VALUES (’Out of tennis rackets’, SYSDATE); <br>
+ END IF; <br>
+ COMMIT;<br>
+<h4>END;</h4><br>
+</h5><br><br>
+
+    <h1>Block Structure</h1><br>
+    PL/SQL is a block-structured language. That is, the basic units (procedures,
+functions, and anonymous blocks) that make up a PL/SQL program are logical
+blocks, which can contain any number of nested sub-blocks. Typically, each logical
+block corresponds to a problem or subproblem to be solved. Thus, PL/SQL
+supports the divide-and- conquer approach to problem solving called stepwise
+refinement <br><br>
+A block (or sub-block) lets you group logically related declarations and statements.
+That way, you can place declarations close to where they are used. The declarations
+are local to the block and cease to exist when the block completes.A PL/SQL block has three parts: <h4>a declarative part, an
+    executable part, and an exception-handling part.</h4> (In PL/SQL, a warning or error
+condition is called an exception.) Only the executable part is required. <br><br>
+The order of the parts is logical. First comes the declarative part, in which items can
+be declared. Once declared, items can be manipulated in the executable part.
+Exceptions raised during execution can be dealt with in the exception-handling
+part. <br>
+<img src="/IMAGES/sql/img2.png" alt="">
+You can nest sub-blocks in the executable and exception-handling parts of a
+PL/SQL block or subprogram but not in the declarative part. Also, you can define
+local subprograms in the declarative part of any block. However, you can call local
+subprograms only from the block in which they are defined<br><br>
+    <h1>Architechture</h1>
+    The PL/SQL runtime system is a technology, not an independent product. Think of
+this technology as an engine that executes PL/SQL blocks and subprograms. The
+engine can be installed in an Oracle server or in an application development tool
+such as Oracle Forms or Oracle Reports. So, PL/SQL can reside in two
+environments: <br><br>
+<h4>-> The Oracle server</h4>
+<br>
+<h4>-> Oracle tools</h4>
+<br> <br>
+These two environments are independent. PL/SQL might be available in the Oracle
+server but unavailable in tools, or the other way around. In either environment, the
+PL/SQL engine accepts as input any valid PL/SQL block or subprogram.
+The PL/SQL engine processing an anonymous block. The engine
+executes procedural statements but sends SQL statements to the SQL Statement
+Executor in the Oracle server. <br><br>
+<img src="/IMAGES/sql/img1.png" alt=""> <br><br>
+<h3>In the Oracle Server
+</h3>
+Application development tools that lack a local PL/SQL engine must rely on
+Oracle to process PL/SQL blocks and subprograms. When it contains the PL/SQL
+engine, an Oracle server can process PL/SQL blocks and subprograms as well as
+single SQL statements. The Oracle server passes the blocks and subprograms to its
+local PL/SQL engine. <br><br>
+<h4>Anonymous Blocks </h4>
+    Anonymous PL/SQL blocks can be embedded in an Oracle Precompiler or OCI
+    program. At run time, the program, lacking a local PL/SQL engine, sends these
+    blocks to the Oracle server, where they are compiled and executed. Likewise,
+    interactive tools such as SQL*Plus and Enterprise Manager, lacking a local PL/SQL
+    engine, must send anonymous blocks to Oracle. <br><br>
+<h4>Stored Subprograms</h4>
+Subprograms can be compiled separately and stored permanently in an Oracle
+database, ready to be executed. A subprogram explicitly CREATEd using an Oracle
+tool is called a stored subprogram. Once compiled and stored in the data dictionary,
+it is a schema object, which can be referenced by any number of applications
+connected to that database. <br>
+Stored subprograms defined within a package are called packaged subprograms;
+those defined independently are called stand-alone subprograms. (Subprograms
+defined within another subprogram or within a PL/SQL block are called local
+subprograms. They cannot be referenced by other applications and exist only for
+the convenience of the enclosing block.) <br><br>
+<br><br>
+
+    
+<h1>Variable & Constants</h1>
+PL/SQL allows you to declare constants and variables, then use them in SQL and
+procedural statements anywhere an expression can be used. However, forward
+references are not allowed. So, you must declare a constant or variable before
+referencing it in other statements, including other declarative statements. <br><br>
+<h4>Declaring Variables</h4><br><br>
+    Variables can have any SQL datatype, such as CHAR, DATE, and NUMBER, or any
+    PL/SQL datatype, such as BOOLEAN and BINARY_INTEGER. For example, assume
+    that you want to declare a variable named part_no to hold 4-digit numbers and a
+    variable named in_stock to hold the Boolean value TRUE or FALSE. You declare
+    these variables as follows:
+<br>
+<h4>part_no NUMBER(4); <br>
+    in_stock BOOLEAN;</h4>
+
+<br><br>
+<h4>Assigning Values to a Variable</h4>
+<br><br>
+You can assign values to a variable in two ways. The first way uses the assignment
+operator (:=), a colon followed by an equal sign. You place the variable to the left
+of the operator and an expression to the right. Some examples follow:
+<br><br>
+<h4>tax := price * tax_rate; <br>
+    bonus := current_salary * 0.10; <br>
+    amount := TO_NUMBER(SUBSTR(’750 dollars’, 1, 3)); <br>
+    valid := FALSE;</h4>
+<br><br>
+<h4>Declaring Constants</h4>
+<br><br>
+Declaring a constant is like declaring a variable except that you must add the
+keyword CONSTANT and immediately assign a value to the constant. Thereafter, no
+more assignments to the constant are allowed. In the following example, you
+declare a constant named credit_limit: <br><br>
+<h4>credit_limit CONSTANT REAL := 5000.00;
+</h4>
+<br><br>
+    <h1>Data Types</h1>
+    Every constant and variable has a datatype, which specifies a storage format,
+constraints, and valid range of values. PL/SQL provides a variety of predefined
+datatypes. A scalar type has no internal components. A composite type has internal
+components that can be manipulated individually. A reference type holds values,
+called pointers, that designate other program items. A LOB type holds values, called
+locators, that specify the location of large objects (graphic images for example)
+stored out-of-line. <br><br>
+<img src="/IMAGES/sql/img3.png" alt=""><br><br>
+
+
+    <h1>Operators</h1><br><br>
+    <h1>Conditional Control</h1><br><br>
+    <h1>Itrative Control</h1><br><br>
+    <h1>Cursor Management</h1><br><br>
+    <h1>Exceptional handling</h1><br><br>
+    <h1>Triggers</h1><br><br>
+    <br><br>
+</body>
+</html>
