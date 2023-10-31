@@ -1,0 +1,116 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital@1&display=swap');
+*{
+    margin: 0%;
+    padding: 0%;
+    color: #ecf0f1;
+    font-family:"Montserrat",sans-serif;
+
+}
+
+header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    
+}
+button > span {
+    color: black;
+    display: inline-block;
+    padding: 5PX 20px;
+    font-size: x-large;
+}
+button{
+    background-color: #ecf0f1;
+    border-radius: 20px;
+}
+button:hover{
+
+    background-color: #ecf0f1b9;
+}
+button>span:hover{
+    transition: .5s;
+    cursor: pointer;
+}
+
+
+nav>ul>a>li{
+    list-style:none;
+    display: inline-block;
+    padding: 0 25px;
+    font-size: x-large;
+    font-weight: 500;
+}
+nav>ul>a>li:hover {
+    color: rgba(240, 248, 255, 0.598);
+    transition: .5s;
+    cursor: pointer;
+}
+
+section{
+    height: 110vh;
+    width: 100%;
+}
+
+.explore{
+    height: 500px;
+    width: 400px;
+    margin: 50px;
+    margin-top: 100px;
+    position: absolute;
+    right: 60px;
+    box-shadow: 10px 10px 50px #717171;
+    border:.5px solid #0000;
+
+}
+span.scroll{
+    border-radius: 100%;
+    position: absolute;
+    background-color: rgba(240, 248, 255, 0.605);
+    padding: 25px;
+    width: 30px;
+    height: 30px;
+    margin-left: 45%;
+}
+span.scroll:hover{
+    background-color: rgba(240, 248, 255, 0.452);
+}
+div.tagline{
+    margin: 60px;
+    margin-top: 100px;
+    color: #a09d9de3;
+}
+span.tagline{
+    font-size: 60px;
+}
+
+
+h1{
+    padding: 20px;
+}
+
+
+div.tag2{
+    position: absolute;
+    right: 20%;
+    margin-top: 15%;
+}
+
+.tag2{
+    color: #000000;
+}
+
+div.tag3{
+    color: #a09d9df3;
+    position: absolute;
+    margin-top: 15%;
+}
+
+footer{
+    height: 50vh;
+    background-color: #828282b1;
+}
+
+button.discover:hover{
+    background-color: #c7c5c5d7;
+    transition: .5s;
+}

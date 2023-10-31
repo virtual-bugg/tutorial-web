@@ -1,0 +1,438 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="../CSS/sql.css">
+    <style>
+        body{
+            margin: 5%;
+            font-size: large;
+        }
+        h4{
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+   <h1> Overview of the SQL Query Language</h1>
+IBM developed the original version of SQL, originally called Sequel, as part of the
+System R project in the early 1970s. The Sequel language has evolved since then,
+and its name has changed to SQL (Structured Query Language). Many products
+now support the SQL language. SQL has clearly established itself as the standard
+relational database language.
+In 1986, the American National Standards Institute (ANSI) and the International Organization for Standardization (ISO) published an SQL standard, called
+SQL-86. ANSI published an extended standard for SQL, SQL-89, in 1989. The next version of the standard was SQL-92 standard, followed by SQL:1999, SQL:2003, SQL:2006,
+and most recently SQL:2008. The bibliographic notes provide references to these
+standards.
+<br><br>
+<h4>The SQL language has several parts:</h4>
+<b>•</b> Data-definition language (DDL). The SQL DDL provides commands for defining relation schemas, deleting relations, and modifying relation schemas.
+<br><b>•</b> Data-manipulation language (DML). The SQL DML provides the ability to
+query information from the database and to insert tuples into, delete tuples
+from, and modify tuples in the database.
+<br><b>•</b> Integrity. The SQL DDL includes commands for specifying integrity constraints that the data stored in the database must satisfy. Updates that violate
+integrity constraints are disallowed.
+<br><b>•</b> View definition. The SQL DDL includes commands for defining views.
+<br><b>•</b> Transaction control. SQL includes commands for specifying the beginning
+and ending of transactions.
+<br><b>•</b> Embedded SQL and dynamic SQL. Embedded and dynamic SQL define how
+SQL statements can be embedded within general-purpose programming languages, such as C, C++, and Java.
+<br><b>•</b> Authorization. The SQL DDL includes commands for specifying access rights
+to relations and views
+<br><br>
+
+
+
+<h1>Basic Types
+</h1>The SQL standard supports a variety of built-in types, including:
+<br><b>• char(n): </b> A fixed-length character string with user-specified length n. The full
+form, character, can be used instead.
+<br><b>• varchar(n): </b>A variable-length character string with user-specified maximum
+length n. The full form, character varying, is equivalent.
+<br><b>• int: </b> An integer (a finite subset of the integers that is machine dependent). The
+full form, integer, is equivalent.
+<br><b>• smallint: </b>A small integer (a machine-dependent subset of the integer type).
+<br><b>• numeric(p, d): </b> A fixed-point number with user-specified precision. The number consists of p digits (plus a sign), and d of the p digits are to the right of
+the decimal point. Thus, numeric(3,1) allows 44.5 to be stored exactly, but
+neither 444.5 or 0.32 can be stored exactly in a field of this type.
+<br><b>• real, double precision: </b>Floating-point and double-precision floating-point
+numbers with machine-dependent precision.
+<br><b>• float(n): </b>A floating-point number, with precision of at least n digits.
+<br><br>
+
+
+
+<h1>Creating Tables</h1>
+We define an SQL relation by using the create table command. The following
+command creates a relation department in the database.
+<br><br>
+<h4>create table department <br>
+    (dept name varchar (20),<br>
+    building varchar (15),<br>
+    budget numeric (12,2), <br>
+    primary key (dept name));</h4>
+<br><br>
+The relation created above has three attributes, dept name, which is a character
+string of maximum length 20, building, which is a character string of maximum
+length 15, and budget, which is a number with 12 digits in total, 2 of which are
+after the decimal point. The create table command also specifies that the dept
+name attribute is the primary key of the department relation.
+<br><br>
+The semicolon shown at the end of the create table statements, as well as
+at the end of other SQL statements later in this chapter, is optional in many SQL
+implementations.
+<br><br>
+
+
+
+
+<h1>Inserting Data</h1>
+A newly created relation is empty initially. We can use the insert command
+to load data into the relation. 
+<br><br>
+<h4>
+    Syntax: <br>
+    insert into table_name <br>
+    values (....); <br><br>
+    The values are specified in the order in which the corresponding attributes are
+listed in the relation schema<br><br>
+    or <br><br>
+    insert into table_name <br>
+    clo1, col2, col3... <br>
+    values (val1,val2,val3....) <br><br>
+    For Example <br>
+</h4>
+<h4>insert into instructor <br>
+    values (10211, ’Smith’, ’Biology’, 66000);</h4>
+<br><br>
+
+
+
+
+<h1>Deletion of data</h1>
+We can use the delete command to delete tuples from a relation. The command would delete all tuples from the student relation. Other forms of the delete command allow specific tuples to be deleted<br><br>
+<h4>Syntax: <br>
+    selete from table_name <br></h4>
+    <br>
+    To remove a relation from an SQL database, we use the drop table command.
+The drop table command deletes all information about the dropped relation from
+the database. The command <br><br>
+<h4>drop table r;</h4>
+<br>
+is a more drastic action than <br>
+<h4>delete from r;</h4> <br><br>
+The latter retains relation r, but deletes all tuples in r. The former deletes not only
+all tuples of r, but also the schema for r. After r is dropped, no tuples can be
+inserted into r unless it is re-created with the create table command.
+<br><br>
+
+
+
+<h1>Updation of relation</h1>
+We use the alter table command to add attributes to an existing relation. All
+tuples in the relation are assigned null as the value for the new attribute. The form
+of the alter table command is <br><br>
+<h4>alter table r add A D;</h4> <br>
+where r is the name of an existing relation, A is the name of the attribute to be
+added, and D is the type of the added attribute. We can drop attributes from a
+relation by the command <br><br>
+<h4>alter table r drop A;</h4> <br>
+where r is the name of an existing relation, and A is the name of an attribute of the
+relation. Many database systems do not support dropping of attributes, although
+they will allow an entire table to be dropped <br><br>
+
+
+
+<h1>Querying Tables</h1>
+The basic structure of an SQL query consists of three clauses: select, from, and
+where. The query takes as its input the relations listed in the from clause, operates
+on them as specified in the where and select clauses, and then produces a relation
+as the result. <br><br>
+<h4>Syntax <br>
+Select col_names or *</h4>(to consider all the colums of a given relation) <h4> from table_name</h4>
+<br><br>
+Now consider a query, “Find the department names of all instructors,”<br>
+which can be written as: 
+<br><br>
+select dept name
+from instructor;
+<br><br>
+<h4> -> Distinct keyword</h4>
+In those cases where we want to force the elimination of duplicates, we insert
+the keyword distinct after select. We can rewrite the preceding query as: <br><br>
+<h4>select distinct dept name
+    from instructor</h4>
+    <br><br>
+<h4> -> All keyword</h4><br>
+SQL allows us to use the keyword all to specify explicitly that duplicates are
+not removed: <br><br>
+<h4>select all dept name
+    from instructor;</h4>
+<br>
+Since duplicate retention is the default, we shall not use all in our examples. To
+ensure the elimination of duplicates in the results of our example queries, we
+shall use distinct whenever it is necessary.
+<br><br>
+<h4>Attribute Specification in Select Clause
+</h4>
+<br>
+The asterisk symbol “ * ” can be used in the select clause to denote “all attributes.”
+Thus, the use of instructor.* in the select clause of the query:
+<br><br>
+<h4>select instructor.*
+    from instructor, teaches
+    where instructor.ID= teaches.ID;</h4><br>
+indicates that all attributes of instructor are to be selected. A select clause of the
+form select * indicates that all attributes of the result relation of the from clause
+are selected
+<br><br>
+
+
+<h1>Null Values</h1>
+Null values present special problems in relational operations, including arithmetic operations, comparison operations, and set operations. <br>
+The result of an arithmetic expression (involving, for example +, −, ∗, or /) is
+null if any of the input values is null. For example, if a query has an expression
+r.A+ 5, and r.Ais null for a particular tuple, then the expression result must also
+be null for that tuple. <br><br>
+Comparisons involving nulls are more of a problem. For example, consider
+the comparison “1 < null”. It would be wrong to say this is true since we do not
+know what the null value represents. But it would likewise be wrong to claim this
+expression is false; if we did, “not (1 < null)” would evaluate to true, which does
+not make sense. SQL therefore treats as unknown the result of any comparison
+involving a null value  <br><br>
+This creates a third logical value in addition to true
+and false.
+Since the predicate in a where clause can involve Boolean operations such
+as and, or, and not on the results of comparisons, the definitions of the Boolean
+operations are extended to deal with the value unknown.
+<br><b>• and: </b> The result of true and unknown is unknown, false and unknown is false,
+while unknown and unknown is unknown.
+<br><b>• or:</b> The result of true or unknown is true, false or unknown is unknown, while
+unknown or unknown is unknown.
+<br><b>• or:</b> The result of not unknown is unknown.
+<br><br>
+
+
+
+<h1>Pattern Matching</h1>
+SQL also permits a variety of functions on character strings, such as concatenating (using “||”), extracting substrings, finding the length of strings, converting <br>
+strings to uppercase (using the function upper(s) where s is a string) and lowercase (using the function lower(s)), removing spaces at the end of the string
+(using trim(s)) and so on. <br>
+There are variations on the exact set of string functions
+supported by different database systems. See your database system’s manual for
+more details on exactly what string functions it supports. <br>
+Pattern matching can be performed on strings, using the operator like. We
+describe patterns by using two special characters: <br><br>
+<br>
+<h4>• Percent (%):</h4> The % character matches any substring.
+<br>
+<h4>• Percent (_):</h4> The character matches any character. <br><br>
+Patterns are case sensitive; that is, uppercase characters do not match lowercase
+characters, or vice versa. To illustrate pattern matching, we consider the following
+examples: 
+<br> • ’Intro%’ matches any string beginning with “Intro”.
+<br> • ’%Comp%’ matches any string containing “Comp” as a substring, for example, ’Intro. to Computer Science’, and ’Computational Biology’.
+<br> • ’ ’ matches any string of exactly three characters.
+<br> • ’ %’ matches any string of at least three characters.
+<br> SQL expresses patterns by using the like comparison operator. Consider the query
+“Find the names of all departments whose building name includes the substring
+‘Watson’.” 
+<br><br> This query can be written as:
+<br>
+<h4>select dept name
+    from department
+    where building like ’%Watson%’;
+    </h4>
+<br><br>
+
+
+
+
+<h1>Ordering Results</h1>
+<h4>Ordering the Display of Tuples</h4>
+<br>
+ SQL offers the user some control over the order in which tuples in a relation
+are displayed. The order by clause causes the tuples in the result of a query to
+appear in sorted order. To list in alphabetic order all instructors in the Physics
+department, we write:
+
+By default, the order by clause lists items in ascending order. To specify the
+sort order, we may specify desc for descending order or asc for ascending order.
+Furthermore, <br><br>
+<h4>select name
+    from instructor
+    where dept name = ’Physics’
+    order by name;</h4>
+<br><br> ordering can be performed on multiple attributes. Suppose that we
+wish to list the entire instructor relation in descending order of salary. If several instructors have the same salary, we order them in ascending order by name. <br>
+We express this query in SQL as follows:
+<br><br>
+<h4>select *
+    from instructor
+    order by salary desc, name asc;</h4>
+<br><br>
+
+
+
+<h1>Aggregate Functions</h1>
+Aggregate functions are functions that take a collection (a set or multiset) of values
+as input and return a single value. SQL offers five built-in aggregate functions:
+<br>
+<h4>• Average: avg</h4>
+<br>
+<h4>• Minimum: min</h4>
+<br>
+<h4>• Maximum: max</h4>
+<br>
+<h4>• Total: sum</h4>
+<br>
+<h4>• Count: count</h4>
+<br>
+The input to sum and avg must be a collection of numbers, but the other operators
+can operate on collections of nonnumeric data types, such as strings, as well.
+<br><br>
+Basic Aggregation
+Consider the query “Find the average salary of instructors in the Computer Science department.” <br>
+We write this query as follows:
+<br><br>
+<h4>select avg (salary)
+    from instructor
+    where dept name= ’Comp. Sci.’;</h4>
+<br><br>
+The result of this query is a relation with a single attribute, containing a single
+tuple with a numerical value corresponding to the average salary of instructors
+in the Computer Science department. The database system may give an arbitrary
+name to the result relation attribute that is generated by aggregation; <br>
+however, we can give a meaningful name to the attribute by using the as clause as follows:
+<br><br>
+<h4>select avg (salary) as avg salary
+    from instructor
+    where dept name= ’Comp. Sci.’;</h4>
+<br><br>
+
+
+
+
+<h1>Views</h1>
+Any such relation that is not part of the logical model, but is made visible to a
+user as a virtual relation, is called a view. It is possible to support a large number
+of views on top of any given set of actual relations. <br><br>
+<h4>View Definition
+</h4>
+<br>
+We define a view in SQL by using the create view command. To define a view, we
+must give the view a name and must state the query that computes the view. The
+<br><br>
+<h4>form of the create view command is:
+    create view v as <query expression>;</h4>
+<br><br>
+where <h4><query expression></query></h4> is any legal query expression. The view name is
+    represented by v.
+    Consider again the clerk who needs to access all data in the instructor relation,
+    except salary. The clerk should not be authorized to access the instructor relation
+    (we see later, in Section 4.6, how authorizations can be specified). <br>
+    Instead, a view relation faculty can be made available to the clerk, with the view defined as
+    follows:
+    <br><br>
+    <h4>create view faculty as
+        select ID, name, dept name
+        from instructor;</h4>
+    <br><br>
+    <h4>    Using Views in SQL Queries
+    </h4>
+    <br>
+Once we have defined a view, we can use the view name to refer to the virtual
+relation that the view generates. Using the view physics fall 2009, we can find
+all Physics courses offered in the Fall 2009 semester in the Watson building by
+writing:
+
+View names may appear in a query any place where a relation name may appear,
+The attribute names of a <br>
+<br>
+<h4>select course id
+    from physics fall 2009
+    where building= ’Watson’;</h4>
+<br><br> 
+view can be specified explicitly as follows:
+<br><br>
+<h4>create view departments total salary(dept name, total salary) as
+    select dept name, sum (salary)
+    from instructor
+    group by dept name</h4>
+<br><br>
+
+<h1>Managing Privilages</h1>
+We may assign a user several forms of authorizations on parts of the database.
+Authorizations on data include:
+<br><br>
+<h4>• Authorization to read data.
+</h4>
+<br>
+<h4>• Authorization to insert new data.
+</h4> 
+<br>
+<h4>• Authorization to update data.
+</h4>
+<br>
+<h4>• Authorization to update data.
+</h4>
+<br><br>
+Each of these types of authorizations is called a <h4>privilege</h4>. We may authorize the
+user all, none, or a combination of these types of privileges on specified parts of
+a database, such as a relation or a view.
+<br><br>
+The SQL data-definition language includes commands to grant and revoke
+privileges. The grant statement is used to confer authorization. <br>
+The basic form of
+this statement is:
+<br><br>
+<h4>grant (privilege list)<br>
+    on (relation name or view name)<br>
+    to (user/role list);</h4><br>
+<br><br>
+The select authorization on a relation is required to read tuples in the relation.
+The following grant statement grants database users Amit and Satoshi select
+authorization on the department relation:
+<br><br>
+<h4>grant select on department to Amit, Satoshi;
+</h4>
+<br><br>
+To revoke an authorization, we use the revoke statement. It takes a form
+almost identical to that of grant:
+<br><br>
+<h4>revoke (privilege list) <br>
+    on (relation name or view name) <br>
+    from (user/role list); <br></h4>
+<br><br>
+Thus, to revoke the privileges that we granted previously, we write
+<br><br>
+<h4>revoke select on department from Amit, Satoshi;
+</h4>
+<br>Revocation of privileges is more complex if the user from whom the privilege
+is revoked has granted the privilege to another user.
+<br><br>
+
+<h1>Transactions</h1>
+A transaction consists of a sequence of query and/or update statements. The SQL
+standard specifies that a transaction begins implicitly when an SQL statement is
+executed. One of the following SQL statements must end the transaction:
+<br><br>
+<h4>• Commit work</h4> commits the current transaction; that is, it makes the updates
+performed by the transaction become permanent in the database. After the
+transaction is committed, a new transaction is automatically started.
+<br><br>
+<h4>• Rollback work</h4> causes the current transaction to be rolled back; that is, it
+undoes all the updates performed by the SQL statements in the transaction.
+Thus, the database state is restored to what it was before the first statement
+of the transaction was executed. <br><br>
+The keyword work is optional in both the statements.
+Transaction rollback is useful if some error condition is detected during execution of a transaction. Commit is similar, in a sense, to saving changes to a
+document that is being edited, while rollback is similar to quitting the edit session without saving changes. Once a transaction has executed commit work, its
+effects can no longer be undone by rollback work. The database system guarantees that in the event of some failure, such as an error in one of the SQL statements,
+a power outage, or a system crash, a transaction’s effects will be rolled back if it
+has not yet executed commit work. In the case of power outage or other system
+crash, the rollback occurs when the system restarts.
+</body>
+</html>

@@ -1,0 +1,667 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="../CSS/sql.css">
+    <style>
+        body{
+            margin: 5%;
+            font-size: large;
+        }
+        h4, h5{
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <h1>Overview</h1>
+    With PL/SQL, you can use SQL statements to manipulate Oracle data and flow-of control statements to process the data. Moreover, you can declare constants and
+variables, define procedures and functions, and trap runtime errors. Thus, PL/SQL
+combines the data manipulating power of SQL with the data processing power of
+procedural languages. <br>
+A good way to get acquainted with PL/SQL is to look at a sample program. The
+program below processes an order for tennis rackets. First, it declares a variable of
+type NUMBER to store the quantity of tennis rackets on hand. Then, it retrieves the
+quantity on hand from a database table named inventory. If the quantity is
+greater than zero, the program updates the table and inserts a purchase record into
+another table named purchase_record. Otherwise, the program inserts an out of-stock record into the purchase_record table.
+-- available online in file ’examp1’
+<br><br>
+<h5>
+    <h4>DECLARE</h4><br>
+ qty_on_hand NUMBER(5); <br>
+<h4>BEGIN</h4> <br>
+ SELECT quantity INTO qty_on_hand FROM inventory <br>
+ WHERE product = ’TENNIS RACKET’<br>
+ FOR UPDATE OF quantity; <br>
+ IF qty_on_hand > 0 THEN -- check quantity <br>
+ UPDATE inventory SET quantity = quantity - 1 <br>
+ WHERE product = ’TENNIS RACKET’; <br>
+ INSERT INTO purchase_record <br>
+ VALUES (’Tennis racket purchased’, SYSDATE); <br>
+ ELSE <br>
+ INSERT INTO purchase_record <br>
+ VALUES (’Out of tennis rackets’, SYSDATE); <br>
+ END IF; <br>
+ COMMIT;<br>
+<h4>END;</h4><br>
+</h5><br><br>
+
+
+
+
+
+    <h1>Block Structure</h1>
+    PL/SQL is a block-structured language. That is, the basic units (procedures,
+functions, and anonymous blocks) that make up a PL/SQL program are logical
+blocks, which can contain any number of nested sub-blocks. Typically, each logical
+block corresponds to a problem or subproblem to be solved. Thus, PL/SQL
+supports the divide-and- conquer approach to problem solving called stepwise
+refinement <br><br>
+A block (or sub-block) lets you group logically related declarations and statements.
+That way, you can place declarations close to where they are used. The declarations
+are local to the block and cease to exist when the block completes.A PL/SQL block has three parts: <h4>a declarative part, an
+    executable part, and an exception-handling part.</h4> (In PL/SQL, a warning or error
+condition is called an exception.) Only the executable part is required. <br><br>
+The order of the parts is logical. First comes the declarative part, in which items can
+be declared. Once declared, items can be manipulated in the executable part.
+Exceptions raised during execution can be dealt with in the exception-handling
+part. <br>
+<img src="../IMAGES/sql/img2.png" alt="">
+You can nest sub-blocks in the executable and exception-handling parts of a
+PL/SQL block or subprogram but not in the declarative part. Also, you can define
+local subprograms in the declarative part of any block. However, you can call local
+subprograms only from the block in which they are defined<br><br>
+
+
+
+
+<h1>Architechture</h1>
+    The PL/SQL runtime system is a technology, not an independent product. Think of
+this technology as an engine that executes PL/SQL blocks and subprograms. The
+engine can be installed in an Oracle server or in an application development tool
+such as Oracle Forms or Oracle Reports. So, PL/SQL can reside in two
+environments: <br><br>
+<h4>-> The Oracle server</h4>
+<br>
+<h4>-> Oracle tools</h4>
+<br> <br>
+These two environments are independent. PL/SQL might be available in the Oracle
+server but unavailable in tools, or the other way around. In either environment, the
+PL/SQL engine accepts as input any valid PL/SQL block or subprogram.
+The PL/SQL engine processing an anonymous block. The engine
+executes procedural statements but sends SQL statements to the SQL Statement
+Executor in the Oracle server. <br><br>
+<img src="../IMAGES/sql/img1.png" alt=""> <br><br>
+<h3>In the Oracle Server
+</h3>
+Application development tools that lack a local PL/SQL engine must rely on
+Oracle to process PL/SQL blocks and subprograms. When it contains the PL/SQL
+engine, an Oracle server can process PL/SQL blocks and subprograms as well as
+single SQL statements. The Oracle server passes the blocks and subprograms to its
+local PL/SQL engine. <br><br>
+<h4>Anonymous Blocks </h4>
+    Anonymous PL/SQL blocks can be embedded in an Oracle Precompiler or OCI
+    program. At run time, the program, lacking a local PL/SQL engine, sends these
+    blocks to the Oracle server, where they are compiled and executed. Likewise,
+    interactive tools such as SQL*Plus and Enterprise Manager, lacking a local PL/SQL
+    engine, must send anonymous blocks to Oracle. <br><br>
+<h4>Stored Subprograms</h4>
+Subprograms can be compiled separately and stored permanently in an Oracle
+database, ready to be executed. A subprogram explicitly CREATEd using an Oracle
+tool is called a stored subprogram. Once compiled and stored in the data dictionary,
+it is a schema object, which can be referenced by any number of applications
+connected to that database. <br>
+Stored subprograms defined within a package are called packaged subprograms;
+those defined independently are called stand-alone subprograms. (Subprograms
+defined within another subprogram or within a PL/SQL block are called local
+subprograms. They cannot be referenced by other applications and exist only for
+the convenience of the enclosing block.) <br><br>
+<br><br>
+
+
+
+
+
+
+
+<h1>Variable & Constants</h1>
+PL/SQL allows you to declare constants and variables, then use them in SQL and
+procedural statements anywhere an expression can be used. However, forward
+references are not allowed. So, you must declare a constant or variable before
+referencing it in other statements, including other declarative statements. <br><br>
+<h4>Declaring Variables</h4><br><br>
+    Variables can have any SQL datatype, such as CHAR, DATE, and NUMBER, or any
+    PL/SQL datatype, such as BOOLEAN and BINARY_INTEGER. For example, assume
+    that you want to declare a variable named part_no to hold 4-digit numbers and a
+    variable named in_stock to hold the Boolean value TRUE or FALSE. You declare
+    these variables as follows:
+<br>
+<h4>part_no NUMBER(4); <br>
+    in_stock BOOLEAN;</h4>
+
+<br><br>
+<h4>Assigning Values to a Variable</h4>
+<br><br>
+You can assign values to a variable in two ways. The first way uses the assignment
+operator (:=), a colon followed by an equal sign. You place the variable to the left
+of the operator and an expression to the right. Some examples follow:
+<br><br>
+<h4>tax := price * tax_rate; <br>
+    bonus := current_salary * 0.10; <br>
+    amount := TO_NUMBER(SUBSTR(’750 dollars’, 1, 3)); <br>
+    valid := FALSE;</h4>
+<br><br>
+<h4>Declaring Constants</h4>
+<br><br>
+Declaring a constant is like declaring a variable except that you must add the
+keyword CONSTANT and immediately assign a value to the constant. Thereafter, no
+more assignments to the constant are allowed. In the following example, you
+declare a constant named credit_limit: <br><br>
+<h4>credit_limit CONSTANT REAL := 5000.00;
+</h4>
+<br><br>
+ 
+
+
+
+
+<h1>Data Types</h1>
+    Every constant and variable has a datatype, which specifies a storage format,
+constraints, and valid range of values. PL/SQL provides a variety of predefined
+datatypes. A scalar type has no internal components. A composite type has internal
+components that can be manipulated individually. A reference type holds values,
+called pointers, that designate other program items. A LOB type holds values, called
+locators, that specify the location of large objects (graphic images for example)
+stored out-of-line. <br><br>
+<img src="../IMAGES/sql/img3.png" alt=""><br><br>
+
+
+
+
+
+<h1>Scope and Visibility</h1> 
+References to an identifier are resolved according to its scope and visibility. The
+scope of an identifier is that region of a program unit (block, subprogram, or
+package) from which you can reference the identifier. An identifier is visible only in
+the regions from which you can reference the identifier using an unqualified name. <br><br>
+The scope and visibility of a variable named x, which is declared in an enclosing block, then redeclared in a sub-block. <br><br>
+<img src="../IMAGES/sql/img7.png" alt=""><br><br>
+Identifiers declared in a PL/SQL block are considered local to that block and global
+to all its sub-blocks. If a global identifier is redeclared in a sub-block, both
+identifiers remain in scope. Within the sub-block, however, only the local identifier
+is visible because you must use a qualified name to reference the global identifier. 
+<br><br>
+Although you cannot declare an identifier twice in the same block, you can declare
+the same identifier in two different blocks. The two items represented by the
+identifier are distinct, and any change in one does not affect the other. However, a
+block cannot reference identifiers declared in other blocks at the same level because
+those identifiers are neither local nor global to the block. <br><br>
+
+
+
+
+
+
+
+    <h1>Operators</h1> 
+    Expressions are constructed using operands and operators. An operand is a variable,
+constant, literal, or function call that contributes a value to an expression. An
+example of a simple arithmetic expression follows: <br>
+<h4>-X / 2 + 3</h4> <br><br>
+Unary operators such as the negation operator <h4>(-)</h4> operate on one operand; binary
+operators such as the division operator <h4> (/)</h4> operate on two operands. PL/SQL has
+no ternary operators. <br><br>
+The simplest expressions consist of a single variable, which yields a value directly.
+PL/SQL evaluates (finds the current value of) an expression by combining the
+values of the operands in ways specified by the operators. This always yields a
+single value and datatype. PL/SQL determines the datatype by examining the
+expression and the context in which it appears. <br><br>
+<h3>Operator Precedence </h3><br><br>
+    The operations within an expression are done in a particular order depending on
+    their precedence (priority). <br><br>
+
+    <img src="../IMAGES/sql/img4.png" alt="">
+
+<h3>Logical Operators</h3>
+The logical operators AND, OR, and NOT follow the tri-state logic <br><br>
+
+<img src="../IMAGES/sql/img5.png" alt="">
+<br><br>
+As the truth table shows, AND returns TRUE only if both its operands are true. On
+the other hand, OR returns TRUE if either of its operands is true. NOT returns the
+opposite value (logical negation) of its operand. 
+<br><br>
+<h4>-> Short-Circuit Evaluation </h4><br><br>
+When evaluating a logical expression, PL/SQL uses shortcircuit evaluation. That is, PL/SQL stops evaluating the expression as soon as the result can be determined. This allows you to write expressions that might
+otherwise cause an error. Consider the following OR expression: <br><br>
+
+<h4>DECLARE
+<br>    ...
+<br>    on_hand INTEGER;
+<br>    on_order INTEGER;
+<br>   BEGIN
+<br>    ..
+<br>    IF (on_hand = 0) OR (on_order / on_hand < 5) THEN
+<br>    ...
+<br>    END IF;
+<br>   END;</h4>
+<br><br>
+When the value of on_hand is zero, the left operand yields TRUE, so PL/SQL need
+not evaluate the right operand. If PL/SQL were to evaluate both operands before
+applying the OR operator, the right operand would cause a division by zero error. In
+any case, it is a poor programming practice to rely on short-circuit evaluation.
+<br><br>
+
+<h3>Comparison Operators</h3> <br><br>
+Comparison operators compare one expression to another. The result is always
+TRUE, FALSE, or NULL. Typically, you use comparison operators in the WHERE
+clause of SQL data manipulation statements and in conditional control statements.
+<br><br>
+
+<h4>1) Relational Operators</h4> <br><br>
+The relational operators allow you to compare arbitrarily complex expressions. The
+following list gives the meaning of each operator: <br><br>
+<img src="../IMAGES/sql/img6.png" alt=""> <br><br>
+
+<h4>2) IS NULL Operator</h4>
+<br><br>
+The IS NULL operator returns the Boolean value TRUE if its operand is null or
+FALSE if it is not null. Comparisons involving nulls always yield NULL. Therefore,
+to test for nullity (the state of being null), <h4>do not use the statement</h4> <br>
+<h4>IF variable = NULL THEN ...
+<br><br>    Instead, use the following statement:
+<br>    IF variable IS NULL THEN ...</h4><br><br>
+
+<h4>3) LIKE Operator</h4><br><br>
+You use the LIKE operator to compare a character value to a pattern. Case is
+significant. LIKE returns the Boolean value TRUE if the character patterns match or
+FALSE if they do not match. <br><br>
+The patterns matched by LIKE can include two special-purpose characters called
+wildcards. An underscore (_) matches exactly one character; a percent sign (%)
+matches zero or more characters. For example, if the value of ename is ’JOHNSON’,
+the following expression yields TRUE: <br><br>
+<h4>ename LIKE ’J%SON’</h4> <br><br>
+
+<h4>4) BETWEEN Operator</h4>
+<br><br>
+The BETWEEN operator tests whether a value lies in a specified range. It means
+“greater than or equal to low value and less than or equal to high value.” For
+example, the following expression yields FALSE: <br><br>
+<h4>45 BETWEEN 38 AND 44</h4><br><br>
+
+<h4>IN Operator</h4><br><br>
+The IN operator tests set membership. It means “equal to any member of.
+The set can contain nulls, but they are ignored. For example, the following
+statement does not delete rows in which the ename column is null: <br><br>
+<h4>DELETE FROM emp WHERE ename IN (NULL, ’KING’, ’FORD’);</h4>
+<br><br>
+Furthermore, expressions of the form
+value NOT IN set
+yield FALSE if the set contains a null. For example, instead of deleting rows in
+which the ename column is not null and not ’KING’, the following statement
+deletes no rows: <br><br>
+<h4>DELETE FROM emp WHERE ename NOT IN (NULL, ’KING’);</h4>
+<br><br>
+
+<h3>Concatenation Operator</h3><br>
+Double vertical bars (||) serve as the concatenation operator, which appends one
+string to another, as the following example shows: <br><br>
+<h4>’suit’ || ’case’ = ’suitcase’</h4> <br><br>
+If both operands have datatype CHAR, the concatenation operator returns a CHAR
+value. Otherwise, it returns a VARCHAR2 value <br><br>
+
+
+
+
+
+
+
+
+    <h1>Control Structures</h1> 
+    Control structures are the most important PL/SQL extension to SQL. Not only does
+PL/SQL let you manipulate Oracle data, it lets you process the data using
+conditional, iterative, and sequential flow-of-control statements such as IF-THEN ELSE, FOR-LOOP, WHILE-LOOP, EXIT-WHEN, and GOTO. Collectively, these
+statements can handle any situation.
+    <br><br>
+    <h1>Conditional Control</h1><br><br>
+    Often, it is necessary to take alternative actions depending on circumstances. The
+<h4>IF-THEN-ELSE</h4> statement lets you execute a sequence of statements conditionally. <br>
+The IF clause checks a condition; the THEN clause defines what to do if the
+condition is true; the ELSE clause defines what to do if the condition is false or null. <br><br>
+
+Consider the program below, which processes a bank transaction. Before allowing
+    you to withdraw $500 from account 3, it makes sure the account has sufficient
+    funds to cover the withdrawal. If the funds are available, the program debits the
+    account; otherwise, the program inserts a record into an audit table. <br><br>
+<h4>
+    DECLARE<br>
+     acct_balance NUMBER(11,2);<br>
+     acct CONSTANT NUMBER(4) := 3;<br>
+     debit_amt CONSTANT NUMBER(5,2) := 500.00;<br>
+    BEGIN<br>
+     SELECT bal INTO acct_balance FROM accounts<br>
+     WHERE account_id = acct<br>
+     FOR UPDATE OF bal;<br>
+     IF acct_balance >= debit_amt THEN<br>
+     UPDATE accounts SET bal = bal - debit_amt<br>
+     WHERE account_id = acct;<br>
+     ELSE<br>
+     INSERT INTO temp VALUES<br>
+     (acct, acct_balance, ’Insufficient funds’);<br>
+     -- insert account, current balance, and message<br>
+     END IF;<br>
+     COMMIT;<br>
+    END;</h4>
+    <br><br>
+    A sequence of statements that uses query results to select alternative actions is
+common in database applications. Another common sequence inserts or deletes a
+row only if an associated entry is found in another table. You can bundle these
+common sequences into a PL/SQL block using conditional logic. This can improve
+performance and simplify the integrity checks built into Oracle Forms applications.
+<br><br>
+    <h1>Itrative Control</h1><br><br>
+    LOOP statements let you execute a sequence of statements multiple times. You place
+the keyword LOOP before the first statement in the sequence and the keywords END
+LOOP after the last statement in the sequence. The following example shows the
+simplest kind of loop, which repeats a sequence of statements continually:
+<br><br><h4>
+    LOOP <br>
+ -- sequence of statements <br>
+END LOOP;<br>
+</h4>
+<br><br>
+The FOR-LOOP statement lets you specify a range of integers, then execute a
+sequence of statements once for each integer in the range. For example, suppose
+that you are a manufacturer of custom-made cars and that each car has a serial
+number. To keep track of which customer buys each car, you might use the
+following FOR loop: <br><br>
+<h4>
+    FOR i IN 1..order_qty LOOP <br>
+ UPDATE sales SET custno = customer_id <br>
+ WHERE serial_num = serial_num_seq.NEXTVAL; <br>
+END LOOP; <br>
+</h4><br><br>
+The WHILE-LOOP statement associates a condition with a sequence of statements.
+Before each iteration of the loop, the condition is evaluated. If the condition yields
+TRUE, the sequence of statements is executed, then control resumes at the top of the
+loop. If the condition yields FALSE or NULL, the loop is bypassed and control
+passes to the next statement. <br>
+In the following example, you find the first employee who has a salary over $4000
+and is higher in the chain of command than employee 7902:<br><br>
+<h4>DECLARE
+<br>    salary emp.sal%TYPE;
+<br> mgr_num emp.mgr%TYPE;
+<br>    last_name emp.ename%TYPE;
+<br>    starting_empno CONSTANT NUMBER(4) := 7902;
+<br>   BEGIN
+<br>    SELECT sal, mgr INTO salary, mgr_num FROM emp
+<br>    WHERE empno = starting_empno;
+<br>    WHILE salary < 4000 LOOP
+<br>    SELECT sal, mgr, ename INTO salary, mgr_num, last_name
+<br>    FROM emp WHERE empno = mgr_num;
+<br>    END LOOP;
+<br>    INSERT INTO temp VALUES (NULL, salary, last_name);
+<br>    COMMIT;
+<br>   END;
+   </h4>
+<br><br>
+The EXIT-WHEN statement lets you complete a loop if further processing is
+impossible or undesirable. When the EXIT statement is encountered, the condition
+in the WHEN clause is evaluated. If the condition yields TRUE, the loop completes
+and control passes to the next statement. <br> In the following example, the loop
+completes when the value of total exceeds 25,000: <br><br>
+<h4>
+    LOOP
+ ...
+ total := total + salary;
+ EXIT WHEN total > 25000; -- exit loop if condition is true
+END LOOP;
+-- control resumes here
+</h4><br><br>
+Sequential Control
+The GOTO statement lets you branch to a label unconditionally. The label, an
+undeclared identifier enclosed by double angle brackets, must precede an
+executable statement or a PL/SQL block. When executed, the GOTO statement
+transfers control to the labeled statement or block, as the following example shows:
+<br><br>
+<h4>IF rating > 90 THEN
+<br>    GOTO calc_raise; -- branch to label
+<br>   END IF;
+<br>   ...
+<br>   &lt&lt calc_raise>>
+<br>   IF job_title = ’SALESMAN’ THEN -- control resumes here
+<br>    amount := commission * 0.25;
+<br>   ELSE
+<br>    amount := salary * 0.10;
+<br>   END IF;</h4><br><br>
+
+
+
+
+
+<h1>Modularity</h1> 
+Modularity lets you break an application down into manageable, well-defined logic
+modules. Through successive refinement, you can reduce a complex problem to a
+set of simple problems that have easy-to-implement solutions. PL/SQL meets this
+need with program units. Besides blocks and subprograms, PL/SQL provides the
+package, which allows you to group related program items into larger units.
+<br><br>
+<h3>Subprograms</h3>
+<br><br>
+PL/SQL has two types of subprograms called procedures and functions, which can
+take parameters and be invoked (called). As the following example shows, a
+subprogram is like a miniature program, beginning with a header followed by an
+optional declarative part, an executable part, and an optional exception-handling
+part: <br><br>
+<h3>PROCEDURE award_bonus (emp_id NUMBER) IS
+<br>    bonus REAL;
+<br>    comm_missing EXCEPTION;
+<br>   BEGIN
+<br>    SELECT comm * 0.15 INTO bonus FROM emp WHERE empno = emp_id;
+<br>    IF bonus IS NULL THEN
+<br>    RAISE comm_missing;
+<br>    ELSE
+<br>    UPDATE payroll SET pay = pay + bonus WHERE empno = emp_id;
+<br>    END IF;
+<br>   EXCEPTION
+<br>    WHEN comm_missing THEN
+<br>    ...
+<br>   END award_bonus;</h3>
+<br><br>
+When called, this procedure accepts an employee number. It uses the number to
+select the employee’s commission from a database table and, at the same time,
+compute a 15% bonus. Then, it checks the bonus amount. If the bonus is null, an
+exception is raised; otherwise, the employee’s payroll record is updated. <br><br>
+
+<h3>External Procedures</h3>
+<br><br>
+Some programming tasks are more quickly or easily done in a lower-level language
+such as C, which is more efficient at machine-precision calculations. For example, a
+Fast Fourier Transform (FFT) routine written in C runs faster than one written in
+PL/SQL. <br><br>
+To support such special-purpose processing, PL/SQL provides an interface for
+calling routines written in other languages. This makes the strengths and
+capabilities of those languages available to you. <br><br>
+An external procedure is a third-generation-language routine stored in a dynamic
+link library (DLL), registered with PL/SQL, and called by you to do special purpose processing. At run time, PL/SQL loads the library dynamically, then calls
+the routine as if it were a PL/SQL subprogram. <br><br>
+Typically, external procedures are used to interface with embedded systems, solve
+scientific and engineering problems, analyze data, or control real-time devices and
+processes. In the following example, you write a PL/SQL stand-alone function
+named interp that registers the C routine c_interp as an external function: <br><br>
+<h4>CREATE FUNCTION interp (
+<br>    -- find the value of y at x degrees using Lagrange interpolation
+<br>     x FLOAT,
+<br>     y FLOAT)
+<br>    RETURN FLOAT AS EXTERNAL
+<br>     LIBRARY mathlib
+<br>     NAME "c_interp"
+<br>     LANGUAGE C;</h4>
+<br><br>
+<h3>Packages</h3> <br>
+PL/SQL lets you bundle logically related types, variables, cursors, and
+subprograms into a package. Each package is easy to understand and the interfaces
+between packages are simple, clear, and well defined. This aids application
+development. <br><br>
+Packages usually have two parts: a specification and a body. The specification is the
+interface to your applications; it declares the types, constants, variables, exceptions,
+cursors, and subprograms available for use. The body defines cursors and
+subprograms and so implements the specification. <br><br>
+In the following example, you package two employment procedures: <br><br>
+
+<h4>CREATE PACKAGE emp_actions AS -- package specification
+<br>    PROCEDURE hire_employee (empno NUMBER, ename CHAR, ...);
+<br>    PROCEDURE fire_employee (emp_id NUMBER);
+<br>   END emp_actions;
+<br>   CREATE PACKAGE BODY emp_actions AS -- package body
+<br>    PROCEDURE hire_employee (empno NUMBER, ename CHAR, ...) IS
+<br>    BEGIN
+<br>    INSERT INTO emp VALUES (empno, ename, ...);
+<br>    END hire_employee;
+<br>    PROCEDURE fire_employee (emp_id NUMBER) IS
+<br>    BEGIN
+<br>    DELETE FROM emp WHERE empno = emp_id;
+<br>    END fire_employee;
+<br>   END emp_actions;</h4>
+<br><br>
+
+
+
+
+
+    <h1>Cursor Management</h1> 
+    Oracle uses work areas to execute SQL statements and store processing
+information. A PL/SQL construct called a cursor lets you name a work area and
+access its stored information. There are two kinds of cursors: implicit and explicit.
+PL/SQL implicitly declares a cursor for all SQL data manipulation statements,
+including queries that return only one row. For queries that return more than one
+row, you can explicitly declare a cursor to process the rows individually. <br><br>
+An example follows: <br>
+<h4>DECLARE
+<br>    CURSOR c1 IS
+<br>    SELECT empno, ename, job FROM emp WHERE deptno = 20;</h4>
+<br><br>The set of rows returned by a multi-row query is called the result set. Its size is the
+number of rows that meet your search criteria. <br><br>
+An explicit
+cursor “points” to the current row in the result set. This allows your program to
+process the rows one at a time.
+<br>
+<img src="../IMAGES/sql/img8.png" alt=""><br><br>
+Multi-row query processing is somewhat like file processing. For example, a
+COBOL program opens a file, processes records, then closes the file. Likewise, a
+PL/SQL program opens a cursor, processes rows returned by a query, then closes
+the cursor. Just as a file pointer marks the current position in an open file, a cursor
+marks the current position in a result set.
+<h3>Cursor Controls</h3>
+You use the <h4>OPEN, FETCH, and CLOSE statements to control a cursor</h4>. The OPEN
+statement executes the query associated with the cursor, identifies the result set,
+and positions the cursor before the first row. The FETCH statement retrieves the
+current row and advances the cursor to the next row. When the last row has been
+processed, the CLOSE statement disables the cursor.
+<br><br>
+<h3>Cursor FOR Loops</h3><br><br>
+In most situations that require an explicit cursor, you can simplify coding by using
+a cursor FOR loop instead of the OPEN, FETCH, and CLOSE statements. A cursor
+FOR loop implicitly declares its loop index as a record that represents a row in a
+database table, opens a cursor, repeatedly fetches rows of values from the result set
+into fields in the record, then closes the cursor when all rows have been processed.
+In the following example, the cursor FOR loop implicitly declares emp_rec as a
+record:
+<br><br>
+<h4>DECLARE
+<br>    CURSOR c1 IS
+<br>    SELECT ename, sal, hiredate, deptno FROM emp;
+<br>    ...
+<br>   BEGIN
+<br>    FOR emp_rec IN c1 LOOP
+<br>    ...
+<br>    salary_total := salary_total + emp_rec.sal;
+<br>    END LOOP;</h4>
+<br><br>
+To reference individual fields in the record, you use dot notation, in which a dot (.)
+serves as the component (field) selector.
+<br><br>
+
+<h3>Cursor Variables</h3><br><br>
+Like a cursor, a cursor variable points to the current row in the result set of a multi row query. But, unlike a cursor, a cursor variable can be opened for any type compatible query. It is not tied to a specific query. Cursor variables are true <br><br>
+PL/SQL variables, to which you can assign new values and which you can pass to
+subprograms stored in an Oracle database. This gives you more flexibility and a
+convenient way to centralize data retrieval. <br><br>
+Typically, you open a cursor variable by passing it to a stored procedure that
+declares a cursor variable as one of its formal parameters. 
+<br><br>The following procedure opens the cursor variable generic_cv for the chosen query:
+PROCEDURE open_cv (generic_cv IN OUT GenericCurTyp, choice IN NUMBER) IS
+<br><br>
+<h4>BEGIN
+<br>    IF choice = 1 THEN
+<br>    OPEN generic_cv FOR SELECT * FROM emp;
+<br>    ELSIF choice = 2 THEN
+<br>    OPEN generic_cv FOR SELECT * FROM dept;
+<br>    ELSIF choice = 3 THEN
+<br>    OPEN generic_cv FOR SELECT * FROM salgrade;
+<br>    END IF;
+<br>   END;</h4>
+<br><br>
+
+
+
+
+    <h1>Exceptional handling</h1> 
+    PL/SQL makes it easy to detect and process predefined and user-defined error
+conditions called exceptions. When an error occurs, an exception is raised. That is,
+normal execution stops and control transfers to the exception-handling part of your
+PL/SQL block or subprogram. To handle raised exceptions, you write separate
+routines called exception handlers. <br><br>
+Predefined exceptions are raised implicitly by the runtime system. For example, if
+you try to divide a number by zero, PL/SQL raises the predefined exception
+ZERO_DIVIDE automatically. You must raise user-defined exceptions explicitly
+with the RAISE statement. <br><br>
+You can define exceptions of your own in the declarative part of any PL/SQL block
+or subprogram. In the executable part, you check for the condition that needs
+special attention. If you find that the condition exists, you execute a RAISE
+statement. In the example below, you compute the bonus earned by a salesperson.
+The bonus is based on salary and commission. So, if the commission is null, you
+raise the exception comm_missing. <br><br>
+
+<br><br>
+<h4>DECLARE
+<br>    ...
+<br>    comm_missing EXCEPTION; -- declare exception
+<br>   BEGIN
+<br>    ...
+<br>    IF commission IS NULL THEN
+<br>    RAISE comm_missing; -- raise exception
+<br>    ELSE
+<br>    bonus := (salary * 0.10) + (commission * 0.15);
+<br>    END IF;
+<br>   EXCEPTION
+<br>    WHEN comm_missing THEN
+<br>    -- process error
+   </h4>
+<br><br>
+
+
+
+
+
+    <h1>Triggers</h1> 
+    A database trigger is a stored subprogram associated with a table. You can have
+Oracle automatically fire the database trigger before or after an INSERT, UPDATE,
+or DELETE statement affects the table. One of the many uses for database triggers is
+to audit data modifications. <br><br>
+ For example, the following database trigger fires whenever salaries in the emp table are updated:
+<br><br>
+<h4>CREATE TRIGGER audit_sal
+<br>    AFTER UPDATE OF sal ON emp
+<br>    FOR EACH ROW
+<br>   BEGIN
+<br>    INSERT INTO emp_audit VALUES ...
+<br>   END;</h4>
+<br><br>
+You can use all the SQL data manipulation statements and any procedural
+statement in the executable part of a database trigger.<br><br>
+</body>
+</html>
